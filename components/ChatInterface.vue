@@ -20,7 +20,7 @@
       </div>
 
       <!-- Input Area -->
-      <div class="flex items-center gap-2 bg-stone-800 p-3 rounded-xl">
+      <div class="flex items-center gap-2 bg-stone-800 p-6 rounded-xl">
         <input v-model="userInput" 
                @keyup.enter="sendMessage"
                class="flex-1 bg-stone-700 text-white rounded-lg px-4 py-2.5 focus:outline-none" 
