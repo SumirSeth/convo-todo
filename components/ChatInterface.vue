@@ -17,6 +17,7 @@
             {{ msg.text }}
           </div>
         </div>
+        <Icon v-if="isLoading" name="eos-icons:three-dots-loading" class="w-10 h-10 text-white"/>
       </div>
 
       <!-- Input Area -->
@@ -37,7 +38,7 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+const isLoading = ref(false)
 
 const messages = ref([
   // Example messages:
@@ -45,10 +46,31 @@ const messages = ref([
 ])
 const userInput = ref('')
 
-const sendMessage = () => {
+const sendMessage = async() => {
   if (!userInput.value.trim()) return
   messages.value.push({ text: userInput.value, sender: 'user' })
-  // Here, you'll later call your API to process the message.
+  const userText = userInput.value.trim()
   userInput.value = ''
+  isLoading.value = true
+
+  try {
+    const response = await $fetch('/api/conversation', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ message: userText })
+    })
+
+    const { apiResponse, raw } = await response
+    const { action, parameters } = raw
+
+    messages.value.push({ text: response, sender: 'bot' })
+
+  } catch (error) {
+    console.error('Error sending message:', error)
+    messages.value.push({ text: `Error sending message. Error: ${error.message}`, sender: 'bot' })
+  } finally {
+    isLoading.value = false
+  }
+
 }
 </script>
