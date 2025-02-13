@@ -7,7 +7,8 @@ export default defineNuxtConfig({
   runtimeConfig: {
     public: {
       supabaseUrl: process.env.NUXT_PUBLIC_SUPABASE_URL,
-      supabaseKey: process.env.NUXT_PUBLIC_SUPABASE_KEY
+      supabaseKey: process.env.NUXT_PUBLIC_SUPABASE_KEY,
+      geminiApiKey: process.env.NUXT_PUBLIC_GEMINI_API_KEY
     }
   },
   supabase: {
@@ -17,5 +18,5 @@ export default defineNuxtConfig({
   },
   imports:{
     autoImport: true,
-  }
+  },
 })

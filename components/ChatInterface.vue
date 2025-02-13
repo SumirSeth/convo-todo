@@ -3,7 +3,7 @@
     <!-- Chat Container -->
     <div class="flex flex-col h-full max-w-3xl mx-auto w-full p-4">
       <!-- Messages Area -->
-      <div class="flex-1 overflow-y-auto mb-4 space-y-4" ref="messagesContainer">
+      <div class="flex-1 overflow-y-auto mb-4 space-y-4 " ref="messagesContainer">
         <div v-for="(msg, index) in messages" 
              :key="index"
              class="flex"
@@ -28,7 +28,7 @@
                type="text" 
                placeholder="Type a message..." />
         <button @click="sendMessage"
-                class="flex justify-center items-center p-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                class="flex justify-center items-center p-2.5 bg-teal-600 text-white rounded-lg hover:bg-teal-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 :disabled="!userInput.trim()">
           <Icon name="material-symbols:send-rounded" class="w-5 h-5" />
         </button>
@@ -38,13 +38,28 @@
 </template>
 
 <script setup>
+import { GoogleGenerativeAI } from '@google/generative-ai'
+const config = useRuntimeConfig
+const key = config.public.geminiApiKey
+const genAI = new GoogleGenerativeAI(key)
+const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash", systemInstruction:""});
+// const prompt = "when is the blogs section coming out?";
+// const result = await model.generateContent(prompt);
 const isLoading = ref(false)
-
+const messagesContainer = ref(null)
 const messages = ref([
   // Example messages:
   { text: 'Hello! How can I help you?', sender: 'bot' }
 ])
 const userInput = ref('')
+watch(() => messages.value, () => {
+  nextTick(() => {
+    if (messagesContainer.value) {
+      messagesContainer.value.scrollTop = messagesContainer.value.scrollHeight
+    }
+  })
+}, { deep: true })
+
 
 const sendMessage = async() => {
   if (!userInput.value.trim()) return
@@ -74,3 +89,9 @@ const sendMessage = async() => {
 
 }
 </script>
+<style>
+::-webkit-scrollbar {
+  width: 0px;
+}
+
+</style>
