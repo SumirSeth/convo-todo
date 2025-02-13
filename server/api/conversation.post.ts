@@ -20,12 +20,16 @@ export default defineEventHandler(async (event) => {
     const prompt = `You are an API intent parser. Return a JSON object without escaped quotes.
 IMPORTANT: Return ONLY raw JSON with no additional text or explanation.
 Format:
-{"action": "add_todo", "parameters": {"task": "buy milk"}}
+{"action": "add_todo", "parameters": {"task": "buy milk", id: <id>}}
 
 Valid actions:
 - add_todo
 - delete_todo
+- mark_todo_completed
+- mark_todo_uncompleted
 - list_todos
+
+Give empty id if you did not get any id from the user.
 
 Parse this user input: "${userMessage}"`;
 
@@ -67,6 +71,14 @@ Parse this user input: "${userMessage}"`;
         break;
       case 'list_todos':
         apiResponse = await $fetch('/api/todos', {method: 'GET'})
+        break;
+
+      case 'mark_todo_completed':
+        apiResponse = await $fetch(`/api/todos/true/${parameters.id}`, {method: 'PATCH'})
+        break;
+
+      case 'mark_todo_uncompleted':
+        apiResponse = await $fetch(`/api/todos/false/${parameters.id}`, {method: 'PATCH'})
         break;
       
       default:

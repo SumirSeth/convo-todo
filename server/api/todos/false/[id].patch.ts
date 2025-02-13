@@ -7,11 +7,11 @@ export default defineEventHandler(async (event) => {
   }
 
   const client = await serverSupabaseClient(event)
-  const { error } = await client.from('todos').delete().eq('id', id)
+  const { data, error } = await client.from('todos').update({ completed: false }).eq('id', id)
 
   if (error) {
     return createError({ statusCode: 500, message: error.message })
   }
 
-  return { message: "Todo deleted!", id: id }
+  return { message: "Todo marked as uncompleted!", todo: data }
 })
