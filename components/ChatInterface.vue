@@ -1,5 +1,5 @@
 <template>
-  <div class="flex flex-col h-screen bg-stone-900">
+  <div class="flex flex-col h-svh bg-stone-900">
     <!-- Chat Container -->
     <div class="flex flex-col h-full max-w-3xl mx-auto w-full p-4">
       <!-- Messages Area -->
