@@ -38,11 +38,6 @@
 </template>
 
 <script setup>
-import { GoogleGenerativeAI } from '@google/generative-ai'
-const config = useRuntimeConfig()
-const key = config.public.geminiApiKey
-const genAI = new GoogleGenerativeAI(key)
-const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash", systemInstruction:""});
 // const prompt = "when is the blogs section coming out?";
 // const result = await model.generateContent(prompt);
 const isLoading = ref(false)
@@ -69,17 +64,37 @@ const sendMessage = async() => {
   isLoading.value = true
 
   try {
-    const response = await $fetch('/api/conversation', {
+  } catch (error) {
+    
+  }
+
+  try {
+
+    const response = await $fetch('/api/decide', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ message: userText })
     })
 
-    const { apiResponse, raw } = await response
+    const { crud, message } = await response
+
+    if (!crud) {
+      messages.value.push({ text: message, sender: 'bot' })
+      return
+    } else {
+      const response2 = await $fetch('/api/conversation', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ message: message })
+    })
+
+    const { apiResponse, raw } = await response2
     const { action, parameters } = raw
 
-    messages.value.push({ text: response, sender: 'bot' })
-
+    messages.value.push({ text: response2, sender: 'bot' }) 
+      return
+    }
+    
   } catch (error) {
     console.error('Error sending message:', error)
     messages.value.push({ text: `Error sending message. Error: ${error.message}`, sender: 'bot' })
