@@ -39,7 +39,7 @@
 
 <script setup>
 import { GoogleGenerativeAI } from '@google/generative-ai'
-const config = useRuntimeConfig
+const config = useRuntimeConfig()
 const key = config.public.geminiApiKey
 const genAI = new GoogleGenerativeAI(key)
 const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash", systemInstruction:""});
