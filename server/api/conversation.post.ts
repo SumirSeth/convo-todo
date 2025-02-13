@@ -3,7 +3,9 @@ import { GoogleGenerativeAI } from '@google/generative-ai';
 
 export default defineEventHandler(async (event) => {
   try {
-    const apiKey = process.env.GEMINI_API_KEY;
+    const config = useRuntimeConfig()
+    const apiKey = config.public.geminiApiKey
+    // const apiKey = process.env.GEMINI_API_KEY;
     if (!apiKey) {
       throw new Error('API key not configured');
     }
