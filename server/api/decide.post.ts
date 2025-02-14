@@ -12,10 +12,14 @@ export default defineEventHandler(async (event) => {
 
     const body = await readBody(event);
     const userMessage = body?.message || '';
+    const cachedTodos = body?.cachedTodos || [];
 
     if (!userMessage) {
       throw new Error('Message is required');
     }
+
+    
+
 
     const sprompt = `You are a smart AI assistant with memory. 
 Your job is to chat with the user normally but also DECIDE when to perform CRUD actions when required.
@@ -49,6 +53,13 @@ Assistant: "Here are some productivity tips..."
 4. If the user is wanting to mark a todo as uncompleted. They may use words like uncomplete, undo, or undone. Be smart and allow use of synonyms.
 5. If the user is wanting to add a todo. They may use words like add, create, or new. Be smart and allow use of synonyms.
 In these cases and similar cases ( use your reasoning to decide if the message is a CRUD command), return a JSON object with intent. return a JSON object without escaped sequence. IMPORTANT: Return only the JSON raw code without any explanation or additional text. Do not use escape sequences at all, just inline JSON object. The JSON object should just say {"action": "parse", "message": <raw user message>}. Nothing else.
+
+You have access to catched todos as follows:
+
+${cachedTodos.map(todo => `- ${todo.content}`).join('\n')}
+
+You can use the catched todo data to make decisions. Also, you can read and understand the todos to get a better understanding of the user's intent and help in understanding the overal context.
+
 `;
 
     const prompt = userMessage;

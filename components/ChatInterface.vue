@@ -38,7 +38,7 @@
 </template>
 
 <script setup>
-import { render } from 'vue'
+const cachedTodos = useState('todoCache', () => [])
 
 const {renderMarkdown} = useUseMarkdown()
 // const prompt = "when is the blogs section coming out?";
@@ -70,7 +70,7 @@ const sendMessage = async() => {
     const response = await $fetch('/api/decide', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ message: userText })
+      body: JSON.stringify({ message: userText, cachedTodos: cachedTodos.value })
     })
 
     const { crud, message } = await response
