@@ -14,7 +14,7 @@
               ? 'bg-teal-700 text-white rounded-br-sm' 
               : 'bg-stone-700 text-gray-100 rounded-bl-sm'
           ]">
-            {{ msg.text }}
+            <div v-html="renderMarkdown(msg.text)" class="prose prose-invert text-white" />
           </div>
         </div>
         <Icon v-if="isLoading" name="eos-icons:three-dots-loading" class="w-10 h-10 text-white"/>
@@ -38,6 +38,9 @@
 </template>
 
 <script setup>
+import { render } from 'vue'
+
+const {renderMarkdown} = useUseMarkdown()
 // const prompt = "when is the blogs section coming out?";
 // const result = await model.generateContent(prompt);
 const isLoading = ref(false)
@@ -62,12 +65,6 @@ const sendMessage = async() => {
   const userText = userInput.value.trim()
   userInput.value = ''
   isLoading.value = true
-
-  try {
-  } catch (error) {
-    
-  }
-
   try {
 
     const response = await $fetch('/api/decide', {
@@ -88,10 +85,16 @@ const sendMessage = async() => {
       body: JSON.stringify({ message: message })
     })
 
-    const { apiResponse, raw } = await response2
-    const { action, parameters } = raw
+    const { apiResponse, action, parameters, complimentaryMessage, raw } = await response2
 
-    messages.value.push({ text: response2, sender: 'bot' }) 
+    let stringTodoList = ''
+    if (action === 'list_todos') {
+      stringTodoList = apiResponse.todos.map(todo => `- ${todo.content}`).join('\n') || ""
+      const { todos } = apiResponse
+    }
+    const m = complimentaryMessage +"\n" + stringTodoList || 'No response received'
+    
+    messages.value.push({ text: m, sender: 'bot' })
       return
     }
     

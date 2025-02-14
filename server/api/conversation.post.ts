@@ -20,7 +20,7 @@ export default defineEventHandler(async (event) => {
     const prompt = `You are an API intent parser. Return a JSON object without escaped quotes.
 IMPORTANT: Return ONLY raw JSON with no additional text or explanation.
 Format:
-{"action": "add_todo", "parameters": {"task": "buy milk", id: <id>}}
+{"action": "add_todo", "parameters": {"task": "buy milk", id: <id>}, complimentaryMessage: "<complimentary message>"}
 
 Valid actions:
 - add_todo
@@ -30,6 +30,9 @@ Valid actions:
 - list_todos
 
 Give empty id if you did not get any id from the user.
+
+Include a short but sweet and polite complimentary message as well in the response coresponding to the action.
+For example, if the user asks "What are my todos?", the complimentary message could be "Here are your todos..." or "Here are your tasks...". or "There you go, your todos..." something like this to make the response more personalized. Replace "..." with whatever you find suitable. Make it more personalised and less robotic like. Add some fun to it. Same with other actions as well.
 
 Parse this user input: "${userMessage}"`;
 
@@ -55,7 +58,7 @@ Parse this user input: "${userMessage}"`;
       return { error: "Failed to parse JSON", raw: responseText, jsonError: jsonError };
     }
     
-    const {action, parameters} = parsedResponse;
+    const {action, parameters, complimentaryMessage} = parsedResponse;
 
     let apiResponse;
     switch (action) {
@@ -86,7 +89,7 @@ Parse this user input: "${userMessage}"`;
     }
 
 
-    return {"apiResponse": apiResponse, "raw": responseText};
+    return {"apiResponse": apiResponse, "action": action, "parameters": parameters, "complimentaryMessage": complimentaryMessage, "raw": responseText};
 
   } catch (error) {
     console.error('Error generating AI response:', error);
