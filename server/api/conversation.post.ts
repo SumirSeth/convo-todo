@@ -12,12 +12,13 @@ export default defineEventHandler(async (event) => {
 
     const body = await readBody(event);
     const userMessage = body?.message || '';
+    const id = body?.id || 0;
 
     if (!userMessage) {
       throw new Error('Message is required');
     }
 
-    const prompt = `You are an API intent parser. Return a JSON object without escaped quotes.
+    const sprompt = `You are an API intent parser. Return a JSON object without escaped quotes.
 IMPORTANT: Return ONLY raw JSON with no additional text or explanation.
 Format:
 {"action": "add_todo", "parameters": {"task": "buy milk", id: <id>}, complimentaryMessage: "<complimentary message>"}
@@ -32,12 +33,14 @@ Valid actions:
 Give empty id if you did not get any id from the user.
 
 Include a short but sweet and polite complimentary message as well in the response coresponding to the action.
-For example, if the user asks "What are my todos?", the complimentary message could be "Here are your todos..." or "Here are your tasks...". or "There you go, your todos..." something like this to make the response more personalized. Replace "..." with whatever you find suitable. Make it more personalised and less robotic like. Add some fun to it. Same with other actions as well.
+For example, if the user asks "What are my todos?", the complimentary message could be "Here are your todos..." or "Here are your tasks...". or "There you go, your todos..." something like this to make the response more personalized. Replace "..." with whatever you find suitable. Make it more personalised and less robotic like. Add some fun to it. Same with other actions as well. Also if the action is list_todo and id is -2, it means that the user has no todos, then return a complimentary message corresponding to that.
 
-Parse this user input: "${userMessage}"`;
+`
+
+    const prompt = `Parse this user input: "${userMessage} with id ${id}"`;
 
     const genAI = new GoogleGenerativeAI(apiKey);
-    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+    const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash", systemInstruction: sprompt });
     const result = await model.generateContent(prompt);
     const responseText = await result.response.text();
     

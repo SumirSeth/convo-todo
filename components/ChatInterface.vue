@@ -41,8 +41,6 @@
 const cachedTodos = useState('todoCache', () => [])
 
 const {renderMarkdown} = useUseMarkdown()
-// const prompt = "when is the blogs section coming out?";
-// const result = await model.generateContent(prompt);
 const isLoading = ref(false)
 const messagesContainer = ref(null)
 const messages = ref([
@@ -60,20 +58,23 @@ watch(() => messages.value, () => {
 
 
 const sendMessage = async() => {
+  console.log("inside sendMessage")
+  
   if (!userInput.value.trim()) return
   messages.value.push({ text: userInput.value, sender: 'user' })
   const userText = userInput.value.trim()
   userInput.value = ''
   isLoading.value = true
   try {
-
+    console.log("inside try of decide")
     const response = await $fetch('/api/decide', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ message: userText, cachedTodos: cachedTodos.value })
     })
-
-    const { crud, message } = await response
+    console.log("decide response", response)
+    
+    const { crud, message, id } = await response
 
     if (!crud) {
       messages.value.push({ text: message, sender: 'bot' })
@@ -82,7 +83,7 @@ const sendMessage = async() => {
       const response2 = await $fetch('/api/conversation', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ message: message })
+      body: JSON.stringify({ message: message, id: id })
     })
 
     const { apiResponse, action, parameters, complimentaryMessage, raw } = await response2
@@ -91,6 +92,15 @@ const sendMessage = async() => {
     if (action === 'list_todos') {
       stringTodoList = apiResponse.todos.map(todo => `- ${todo.content}`).join('\n') || ""
       const { todos } = apiResponse
+    }
+    if (action === 'add_todo' || action === 'delete_todo' || action === 'mark_todo_completed' || action === 'mark_todo_uncompleted') {
+      const r = await $fetch('/api/todos', {method: 'GET'})
+        const data = r.todos
+        if (data) {
+          cachedTodos.value = data
+            console.log('todoCache', cachedTodos.value)
+            console.log("From add_todo")
+        }
     }
     const m = complimentaryMessage +"\n" + stringTodoList || 'No response received'
     
