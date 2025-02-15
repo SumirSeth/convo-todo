@@ -33,7 +33,7 @@ Valid actions:
 Give empty id if you did not get any id from the user.
 
 Include a short but sweet and polite complimentary message as well in the response coresponding to the action.
-For example, if the user asks "What are my todos?", the complimentary message could be "Here are your todos..." or "Here are your tasks...". or "There you go, your todos..." something like this to make the response more personalized. Replace "..." with whatever you find suitable. Make it more personalised and less robotic like. Add some fun to it. Same with other actions as well. Also if the action is list_todo and id is -2, it means that the user has no todos, then return a complimentary message corresponding to that.
+For example, if the user asks "What are my todos?" or the action is list_todos, the complimentary message could be "Here are your todos..." or "Here are your tasks...". or "There you go, your todos..." something like this to make the response more personalized. Replace "..." with whatever you find suitable but do not show id information in it. Make it more personalised and less robotic like. Add some fun to it. Same with other actions as well. Also if the action is list_todo and id is -2, it means that the user has no todos, then return a complimentary message corresponding to that. Do not include id information in the complimentary message.
 
 `
 

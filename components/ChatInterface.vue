@@ -90,8 +90,7 @@ const sendMessage = async() => {
 
     let stringTodoList = ''
     if (action === 'list_todos') {
-      stringTodoList = apiResponse.todos.map(todo => `- ${todo.content}`).join('\n') || ""
-      const { todos } = apiResponse
+      stringTodoList = apiResponse.todos.map(todo => `- ${todo.content} (${todo.completed ? '✅' : '❌'})`).join('\n') || ""
     }
     if (action === 'add_todo' || action === 'delete_todo' || action === 'mark_todo_completed' || action === 'mark_todo_uncompleted') {
       const r = await $fetch('/api/todos', {method: 'GET'})
