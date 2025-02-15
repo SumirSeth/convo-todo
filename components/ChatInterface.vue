@@ -45,7 +45,7 @@ const isLoading = ref(false)
 const messagesContainer = ref(null)
 const messages = ref([
   // Example messages:
-  { text: 'Hello! How can I help you? \n\nType help to know more!', sender: 'bot' }
+  { text: 'Hello! How can I help you? \n\nType `help` to know more!', sender: 'bot' }
 ])
 const userInput = ref('')
 watch(() => messages.value, () => {
