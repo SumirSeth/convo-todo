@@ -58,21 +58,17 @@ watch(() => messages.value, () => {
 
 
 const sendMessage = async() => {
-  console.log("inside sendMessage")
-  
   if (!userInput.value.trim()) return
   messages.value.push({ text: userInput.value, sender: 'user' })
   const userText = userInput.value.trim()
   userInput.value = ''
   isLoading.value = true
   try {
-    console.log("inside try of decide")
     const response = await $fetch('/api/decide', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ message: userText, cachedTodos: cachedTodos.value })
     })
-    console.log("decide response", response)
     
     const { crud, message, id } = await response
 
@@ -97,8 +93,6 @@ const sendMessage = async() => {
         const data = r.todos
         if (data) {
           cachedTodos.value = data
-            console.log('todoCache', cachedTodos.value)
-            console.log("From add_todo")
         }
     }
     const m = complimentaryMessage +"\n" + stringTodoList || 'No response received'

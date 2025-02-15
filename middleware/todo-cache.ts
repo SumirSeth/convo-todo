@@ -9,7 +9,6 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
         const data = response.todos
         if (data) {
             todoCache.value = data
-            console.log('todoCache', todoCache.value)
         }
     }
     
