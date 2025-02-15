@@ -80,7 +80,7 @@ If there is a need to expose cached todos, then expose them in a human readable 
 You MUST return only a JSON object. Do NOT include any extra text, explanations, or escape sequences. Your response must always be valid JSON that a machine can parse directly. The JSON object should just say {"action": "parse", "message": <raw user message>, "id": <id>}. Nothing else.
 The id is mandatory. Do NOT omit it.
 
-
+Give a comprehensive help message if the user is asking for help on how to use you!
 `;
 
     const prompt = userMessage;
